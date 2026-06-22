@@ -1,0 +1,42 @@
+BOOK REPORT
+====================
+
+total books: 20
+BOOKS PER CATEGORY
+----------------------
+DevOps : 3
+Interview Prep : 1
+Algorithms : 2
+System Design : 1
+Architecture : 3
+JavaScript : 1
+Programming : 6
+Spring : 1
+Software Design : 2
+
+Max price: 1500.0
+Min price: 550.0
+Min price: 550.0
+Most expensive book: Introduction to Algorithms
+Least expensive book: Head First Java
+Average price: 899.75
+Total quantity: 286
+Total Inventory Value237135.0
+Latest published year: 2023
+Oldest published year: 1994
+
+LANGUAGE DISTRIBUTION
+----------------------
+English : 20
+
+PUBLISHER-WISE COUNT
+----------------------
+Addison-Wesley : 4
+Pearson : 2
+MIT Press : 1
+Independently Published : 2
+OReilly : 4
+Manning : 4
+IT Revolution : 1
+Prentice Hall : 1
+CareerCup : 1
