@@ -1,11 +1,15 @@
 package com.p99training.book_store.controller;
 
 import com.p99training.book_store.model.Book;
-import com.p99training.book_store.service.CsvLoaderService;
 import com.p99training.book_store.service.BookService;
+import com.p99training.book_store.service.CsvLoaderService;
 import com.p99training.book_store.service.ReportService;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,57 +19,77 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
 
-    private final BookService csvService;
+    private final BookService bookService;
 
     private final ReportService reportService;
 
     private final CsvLoaderService csvLoaderService;
 
+
     @GetMapping("/json")
     public ResponseEntity<List<Book>> getJson() {
-
 
         return ResponseEntity.ok(
                 csvLoaderService.loadBooks()
         );
     }
 
+
     @GetMapping("/report")
-    public String getReport(){
+    public ResponseEntity<String> getReport() {
+
         List<Book> books = csvLoaderService.loadBooks();
 
-        return reportService.generateReport(books);
+        return ResponseEntity.ok(reportService.generateReport(books));
     }
 
-    @GetMapping()
-    public List<Book> getAll(){
-        return csvService.getAll();
+
+    @GetMapping
+    public ResponseEntity<List<Book>> getAll() {
+
+        return ResponseEntity.ok(
+                bookService.getAll()
+        );
     }
 
 
     @GetMapping("/{id}")
-    public Book getById(@PathVariable Long id){
-        return csvService.getById(id);
+    public ResponseEntity<Book> getById(
+            @PathVariable Long id
+    ) {
+
+        return ResponseEntity.ok(bookService.getById(id));
     }
 
 
+    @PostMapping
+    public ResponseEntity<Book> create(
+            @RequestBody Book book
+    ) {
 
-    @PostMapping()
-    public Book create(@RequestBody Book book){
-        return csvService.create(book);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(bookService.create(book));
     }
 
 
     @PutMapping("/{id}")
-    public Book update(@PathVariable Long id, @RequestBody Book book){
-        return csvService.update(id,book);
+    public ResponseEntity<Book> update(
+            @PathVariable Long id,
+            @RequestBody Book book
+    ) {
+
+        return ResponseEntity.ok(
+                bookService.update(id, book));
     }
 
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id){
-        return csvService.delete(id);
-    }
+    public ResponseEntity<String> delete(
+            @PathVariable Long id
+    ) {
 
+        return ResponseEntity.ok(bookService.delete(id));
+    }
 
 }
