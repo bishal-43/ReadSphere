@@ -5,6 +5,7 @@ import com.p99training.book_store.service.BookService;
 import com.p99training.book_store.service.CsvLoaderService;
 import com.p99training.book_store.service.ReportService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Book> create(
-            @RequestBody Book book
+            @Valid @RequestBody Book book
     ) {
 
         return ResponseEntity
@@ -76,7 +77,7 @@ public class BookController {
     @PutMapping("/{id}")
     public ResponseEntity<Book> update(
             @PathVariable Long id,
-            @RequestBody Book book
+            @Valid @RequestBody Book book
     ) {
 
         return ResponseEntity.ok(
