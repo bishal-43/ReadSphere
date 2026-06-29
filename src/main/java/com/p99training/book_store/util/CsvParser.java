@@ -11,8 +11,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+
+
 
 public class CsvParser {
 
@@ -37,54 +38,31 @@ public class CsvParser {
         rows.remove(0);
 
         int lineNum = 1; // Line 1 is the header
-        for (String[] row: rows){
+        for (String[] row: rows) {
             lineNum++;
             if (row.length < 10) {
                 throw new CsvException("Invalid CSV row at line " + lineNum + ": expected 10 columns, but got " + row.length);
             }
 
-            Book book = new Book();
+            Book book;
 
             try {
-                book.setId(Long.parseLong(row[0].trim()));
+                book = Book.builder()
+                        .id(Long.parseLong(row[0].trim()))
+                        .bookName(row[1] != null ? row[1].trim() : "")
+                        .authorName(row[2] != null ? row[2].trim() : "")
+                        .category(row[3] != null ? row[3].trim() : "")
+                        .publisher(row[4] != null ? row[4].trim() : "")
+                        .price(Double.parseDouble(row[5].trim()))
+                        .quantity(Integer.parseInt(row[6].trim()))
+                        .publisherYear(Integer.parseInt(row[7].trim()))
+                        .isbn(row[8] != null ? row[8].trim() : "")
+                        .language(row[9] != null ? row[9].trim() : "")
+                        .build();
             } catch (NumberFormatException e) {
-                throw new CsvException("Invalid ID format at line " + lineNum + ": " + row[0]);
+
+                throw new CsvException("Invalid data at line " + lineNum);
             }
-
-            book.setBookName(row[1] != null ? row[1].trim() : "");
-            book.setAuthorName(row[2] != null ? row[2].trim() : "");
-            book.setCategory(row[3] != null ? row[3].trim() : "");
-            book.setPublisher(row[4] != null ? row[4].trim() : "");
-
-            try {
-                book.setPrice(Double.parseDouble(row[5].trim()));
-            } catch (NumberFormatException e) {
-                throw new CsvException("Invalid Price format at line " + lineNum + ": " + row[5]);
-            }
-
-            try {
-                book.setQuantity(Integer.parseInt(row[6].trim()));
-            } catch (NumberFormatException e) {
-                throw new CsvException("Invalid Quantity format at line " + lineNum + ": " + row[6]);
-            }
-
-            try {
-                book.setPublisherYear(Integer.parseInt(row[7].trim()));
-            } catch (NumberFormatException e) {
-                throw new CsvException("Invalid Published Year format at line " + lineNum + ": " + row[7]);
-            }
-
-            book.setIsbn(row[8] != null ? row[8].trim() : "");
-            book.setLanguage(row[9] != null ? row[9].trim() : "");
-
-            Set<ConstraintViolation<Book>> violations = validator.validate(book);
-            if (!violations.isEmpty()) {
-                String validationErrors = violations.stream()
-                        .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
-                        .collect(Collectors.joining(", "));
-                throw new CsvException("Validation failed at line " + lineNum + ": " + validationErrors);
-            }
-
             books.add(book);
         }
         return books;

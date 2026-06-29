@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data  // automatically generates standard boilerplate code for your data classes during compilation
-@Builder
+@Builder                    //
 @NoArgsConstructor
 @AllArgsConstructor
 

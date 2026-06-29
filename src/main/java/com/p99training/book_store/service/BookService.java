@@ -6,6 +6,8 @@ import com.p99training.book_store.model.Book;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -19,8 +21,7 @@ public class BookService {
     public BookService(
             CsvLoaderService loader
     ) {
-        this.books =
-                loader.loadBooks();
+        this.books =  loader.loadBooks();
     }
 
 
@@ -30,6 +31,44 @@ public class BookService {
     public List<Book> getAll() {
         log.info("Fetching all books");
         return books;
+    }
+
+
+    public List<Book> getBooks(int page, int size, String sortBy, String direction){
+
+        log.info("Fetching books page={} size={} sort={} direction={}",
+                page,
+                size,
+                sortBy,
+                direction );
+
+        Comparator<Book> comparator = Comparator.comparing( book -> {
+            try{
+                Field field = Book.class.getDeclaredField(sortBy);
+
+                field.setAccessible(true);
+
+                return(Comparable)field.get(book);
+            } catch(Exception e){
+                throw new RuntimeException("Invalid sort field: " + sortBy);
+            }
+        });
+
+        if(direction.equalsIgnoreCase("desc")){
+            comparator = comparator.reversed();
+        }
+
+        List<Book> sortedBooks = books.stream().sorted(comparator).toList();
+
+        int start = page * size;
+
+        int end = Math.min(start+size,sortedBooks.size());
+
+        if(start >= sortedBooks.size()){
+            return List.of();
+        }
+
+        return sortedBooks.subList(start,end);
     }
 
     public Book getById(Long id) {

@@ -17,10 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books")
-@RequiredArgsConstructor
+@RequiredArgsConstructor                   // generates a constructor with required arguments
 public class BookController {
 
-    private final BookService bookService;
+    private final BookService bookService;      // Dependency Injection
 
     private final ReportService reportService;
 
@@ -46,10 +46,25 @@ public class BookController {
 
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAll() {
+    public ResponseEntity<List<Book>> getAll(
+
+            @RequestParam(defaultValue = "0")
+            int page,
+
+            @RequestParam(defaultValue = "10")
+            int size,
+
+
+            @RequestParam(defaultValue = "id")
+            String sortBy,
+
+            @RequestParam(defaultValue = "asc")
+            String direction
+
+    ) {
 
         return ResponseEntity.ok(
-                bookService.getAll()
+                bookService.getBooks(page,size,sortBy, direction)
         );
     }
 
